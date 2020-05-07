@@ -8,8 +8,76 @@ const fs = require("fs");
 // const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
+let firstEmployee = true;
+let teamList = [];
+let createTeam = true;
+
+
+async function init () {
+    while (createTeam === true) {
+        if (firstEmployee) {
+            await createManager()
+            firstEmployee = false
+        }
+        else {
+            await inquirer
+            .prompt ([
+                {                
+                type: "list",
+                message: "Would you like to add another employee to this team?",
+                choices: ["yes", "no"],
+                name: "addEmployee"
+                }
+        ]).then(async function(response){
+            if (response.addEmployee === "yes") {
+                await employeeType()
+            }
+            else {
+                createTeam = false
+            }
+        })
+        }
+    }
+}
+
+init()
+
+function employeeType () {
+    return inquirer
+    .prompt ([
+        {
+            type: "list",
+            message: "What is the employee's role?",
+            choices: ["manager", "engineer", "intern"],
+            name: "role"
+        },
+    ]).then(function(response){
+        console.log(response)
+        switch(response.role) {
+            case "manager":
+                createManager();
+                break;
+            case "engineer":
+                createEngineer();
+                break;
+            case "intern":
+                createIntern();
+                break;
+            default:
+                return null
+          }
+    })
+}
+    
+    
+    //prompt for manager information to start team creation
+    //once manager is entered, prompt for adding additiona team members
+    //if yes, prompt for employee role
+    //if no, create team.html
+
+
 function createManager () {
-    inquirer
+    return inquirer
         .prompt ([
             {
                 type: "input",
@@ -33,11 +101,13 @@ function createManager () {
             },
         ]).then(function(response){
             console.log(response)
+            teamList.push(new Manager (response.name, response.id, response.email, response.officeNumber))
+            console.log(teamList);
         })
 }
 
 function createEngineer () {
-    inquirer
+    return inquirer
         .prompt ([
             {
                 type: "input",
@@ -65,7 +135,7 @@ function createEngineer () {
 }
 
 function createIntern () {
-    inquirer
+    return inquirer
         .prompt ([
             {
                 type: "input",
@@ -94,6 +164,4 @@ function createIntern () {
 }
 
 
-createManager()
-createEngineer()
-createIntern()
+// employeeType()
