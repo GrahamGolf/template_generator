@@ -4,8 +4,8 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
-// ​const OUTPUT_DIR = path.resolve(__dirname, "output")
-// const outputPath = path.join(OUTPUT_DIR, "team.html");
+const OUTPUT_DIR = path.resolve(__dirname, "output");
+const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 let firstEmployee = true;
@@ -38,6 +38,20 @@ async function init () {
         })
         }
     }
+    console.log(teamList)
+    const html = render(teamList);
+
+    if (!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR)
+    }
+
+    fs.writeFile(outputPath, html, function(err) {
+
+        if (err) {
+          return console.log(err);
+        }
+        console.log("Success!");
+      });
 }
 
 init()
@@ -52,28 +66,18 @@ function employeeType () {
             name: "role"
         },
     ]).then(function(response){
-        console.log(response)
         switch(response.role) {
             case "manager":
-                createManager();
-                break;
+                return createManager();
             case "engineer":
-                createEngineer();
-                break;
+                return createEngineer();
             case "intern":
-                createIntern();
-                break;
+                return createIntern();
             default:
                 return null
           }
     })
 }
-    
-    
-    //prompt for manager information to start team creation
-    //once manager is entered, prompt for adding additiona team members
-    //if yes, prompt for employee role
-    //if no, create team.html
 
 
 function createManager () {
@@ -82,27 +86,49 @@ function createManager () {
             {
                 type: "input",
                 message: "What is the Manager's name?",
-                name: "name"
+                name: "name",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "name not entered"
+                }
             },
             {
                 type: "input",
                 message: "What is the Manager's employee id?",
-                name: "id"
+                name: "id",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "id not entered"
+                }
             },
             {
                 type: "input",
                 message: "What is the Manager's email?",
-                name: "email"
+                name: "email",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "email not entered"
+                }
             },
             {
                 type: "input",
                 message: "What is the Manager's office number?",
-                name: "officeNumber"
+                name: "officeNumber",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "office number not entered"
+                }
             },
         ]).then(function(response){
-            console.log(response)
             teamList.push(new Manager (response.name, response.id, response.email, response.officeNumber))
-            console.log(teamList);
         })
 }
 
@@ -112,25 +138,49 @@ function createEngineer () {
             {
                 type: "input",
                 message: "What is the Engineer's name?",
-                name: "name"
+                name: "name",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "name not entered"
+                }
             },
             {
                 type: "input",
                 message: "What is the Engineer's employee id?",
-                name: "id"
+                name: "id",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "id not entered"
+                }
             },
             {
                 type: "input",
                 message: "What is the Engineer's email?",
-                name: "email"
+                name: "email",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "email not entered"
+                }
             },
             {
                 type: "input",
                 message: "What is the Engineer's Github name?",
-                name: "github"
+                name: "github",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "github not entered"
+                }
             },
         ]).then(function(response){
-            console.log(response)
+            teamList.push(new Engineer (response.name, response.id, response.email, response.github))
         })
 }
 
@@ -140,28 +190,49 @@ function createIntern () {
             {
                 type: "input",
                 message: "What is the Intern's name?",
-                name: "name"
+                name: "name",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "name not entered"
+                }
             },
             {
                 type: "input",
                 message: "What is the Intern's employee id?",
-                name: "id"
+                name: "id",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "id not entered"
+                }
             },
             {
                 type: "input",
                 message: "What is the Intern's email?",
-                name: "email"
+                name: "email",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "email not entered"
+                }
             },
             {
                 type: "input",
                 message: "What school does the intern attend?",
-                name: "school"
+                name: "school",
+                validate: answer => {
+                    if (answer !== "") {
+                        return true
+                    }
+                    return "school not entered"
+                }
             },
         ])
         .then(function(response){
-            console.log(response)
+            teamList.push(new Intern (response.name, response.id, response.email, response.school))
         })
 }
-
-
-// employeeType()
